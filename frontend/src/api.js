@@ -1,10 +1,14 @@
 // Central API client for smltakeoff_repo
 // JB requirement: NO localhost hardcoding. Always use Render backend.
 
-export const API_BASE =
+const RAW_BASE =
   (import.meta?.env?.VITE_API_BASE &&
-    String(import.meta.env.VITE_API_BASE).replace(/\/$/, "")) ||
+    String(import.meta.env.VITE_API_BASE).trim()) ||
+  (import.meta?.env?.VITE_API_BASE_URL &&
+    String(import.meta.env.VITE_API_BASE_URL).trim()) ||
   "https://smltakeoff-backend.onrender.com";
+
+export const API_BASE = RAW_BASE.replace(/\/$/, "");
 
 const TOKEN_KEY = "token";
 
@@ -29,10 +33,22 @@ function authHeaders(extra = {}) {
   };
 }
 
+// Build a full URL using API_BASE, unless already absolute.
+export function toApiUrl(path) {
+  if (!path) return API_BASE;
+  if (typeof path !== "string") path = String(path);
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  return `${API_BASE}${path.startsWith("/") ? "" : "/"}${path}`;
+}
+
+// Some parts of your app import this specifically.
+export function fileStreamUrl(path) {
+  // Accepts "/api/..." or "api/..." or any backend path. Returns full URL.
+  return toApiUrl(path);
+}
+
 async function request(path, opts = {}) {
-  const url = path.startsWith("http")
-    ? path
-    : `${API_BASE}${path.startsWith("/") ? "" : "/"}${path}`;
+  const url = toApiUrl(path);
 
   const res = await fetch(url, {
     ...opts,
@@ -49,7 +65,6 @@ async function request(path, opts = {}) {
   return res;
 }
 
-// Common helpers (keep these if your app uses them)
 export const api = {
   get: (path) => request(path),
   post: (path, body) =>
