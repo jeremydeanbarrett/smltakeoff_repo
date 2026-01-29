@@ -52,7 +52,7 @@ function NavBar({ authed, onLogout }) {
   );
 }
 
-function Login() {
+function Login({ onAuthed }) {
   const nav = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -64,9 +64,10 @@ function Login() {
     try {
       const { token } = await api.login(email, password);
       setToken(token);
+      onAuthed(true);
       nav("/projects");
     } catch (ex) {
-      setErr(ex.message);
+      setErr(ex.message || String(ex));
     }
   }
 
@@ -83,7 +84,7 @@ function Login() {
   );
 }
 
-function Register() {
+function Register({ onAuthed }) {
   const nav = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -95,9 +96,10 @@ function Register() {
     try {
       const { token } = await api.register(email, password);
       setToken(token);
+      onAuthed(true);
       nav("/projects");
     } catch (ex) {
-      setErr(ex.message);
+      setErr(ex.message || String(ex));
     }
   }
 
@@ -135,7 +137,7 @@ function Projects() {
       setDescription("");
       refresh();
     } catch (ex) {
-      setErr(ex.message);
+      setErr(ex.message || String(ex));
     }
   }
 
@@ -196,8 +198,8 @@ function ProjectView() {
     const { project } = await api.getProject(projectId);
     const { files } = await api.listFiles(projectId);
     setProject(project);
-    setFiles(files);
-    if (files.length && !selected) setSelected(files[0]);
+    setFiles(files || []);
+    if (files?.length && !selected) setSelected(files[0]);
   }
 
   useEffect(() => { refresh(); }, [projectId]);
@@ -212,7 +214,7 @@ function ProjectView() {
       setSelected(null);
       refresh();
     } catch (ex) {
-      setErr(ex.message);
+      setErr(ex.message || String(ex));
     }
   }
 
@@ -300,25 +302,34 @@ function ProjectView() {
 }
 
 function RequireAuth({ children }) {
-  // Guest mode: if token is missing, set the dev token instead of forcing a login screen.
+  const nav = useNavigate();
+
   useEffect(() => {
-    if (!getToken()) setToken("dev-noauth");
-  }, []);
+    // Real auth: if no token, go to login.
+    if (!getToken()) nav("/login");
+  }, [nav]);
+
   return children;
 }
 
+function HomeGate({ authed }) {
+  // If authed, land on projects. Otherwise show login.
+  return authed ? <Projects /> : <Login onAuthed={() => {}} />;
+}
+
 export default function App() {
-  // Guest mode default
-  if (!getToken()) setToken("dev-noauth");
   const [authed, setAuthed] = useState(!!getToken());
-function logout() {
+
+  function logout() {
     clearToken();
     setAuthed(false);
-    window.location.href = "/login";
+    // HashRouter requires hash route for hard navigation:
+    window.location.href = "/#/login";
   }
 
+  // Keep auth state in sync if token changes
   useEffect(() => {
-    const i = setInterval(() => setAuthed(!!getToken()), 500);
+    const i = setInterval(() => setAuthed(!!getToken()), 400);
     return () => clearInterval(i);
   }, []);
 
@@ -327,9 +338,9 @@ function logout() {
       <div className="container">
         <NavBar authed={authed} onLogout={logout} />
         <Routes>
-          <Route path="/" element={authed ? <Projects /> : <Login />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/" element={authed ? <Projects /> : <Login onAuthed={setAuthed} />} />
+          <Route path="/login" element={<Login onAuthed={setAuthed} />} />
+          <Route path="/register" element={<Register onAuthed={setAuthed} />} />
           <Route path="/projects" element={<RequireAuth><Projects /></RequireAuth>} />
           <Route path="/libraries" element={<RequireAuth><LibrariesPage /></RequireAuth>} />
           <Route path="/projects/:id" element={<RequireAuth><ProjectView /></RequireAuth>} />
