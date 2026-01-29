@@ -68,4 +68,76 @@ async function request(path, opts = {}) {
  *
  * If your backend uses slightly different routes, we’ll adjust once we see the next error.
  */
-export functi
+export function fileStreamUrl(fileId) {
+  return toApiUrl(`/api/files/${fileId}/stream`);
+}
+
+export function fileDownloadUrl(fileId) {
+  return toApiUrl(`/api/files/${fileId}/download`);
+}
+
+export async function uploadFile(projectId, file) {
+  const url = toApiUrl(`/api/projects/${projectId}/files`);
+
+  const form = new FormData();
+  form.append("file", file);
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: authHeaders({}),
+    body: form,
+  });
+
+  if (!res.ok) {
+    const txt = await res.text().catch(() => "");
+    throw new Error(`API ${res.status} ${res.statusText}: ${txt}`.trim());
+  }
+
+  const ct = res.headers.get("content-type") || "";
+  if (ct.includes("application/json")) return res.json();
+  return res;
+}
+
+export async function deleteFile(fileId) {
+  return request(`/api/files/${fileId}`, { method: "DELETE" });
+}
+
+/**
+ * API methods used by App.jsx (and likely other pages)
+ * These route names are the obvious, standard ones.
+ * If your backend uses different ones, the next Render log will tell us and we’ll adjust fast.
+ */
+export const api = {
+  // Auth
+  login: (email, password) =>
+    request(`/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    }),
+
+  register: (email, password) =>
+    request(`/api/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    }),
+
+  // Projects
+  listProjects: () => request(`/api/projects`),
+
+  createProject: (name, description) =>
+    request(`/api/projects`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, description }),
+    }),
+
+  getProject: (projectId) => request(`/api/projects/${projectId}`),
+
+  deleteProject: (projectId) =>
+    request(`/api/projects/${projectId}`, { method: "DELETE" }),
+
+  // Files
+  listFiles: (projectId) => request(`/api/projects/${projectId}/files`),
+};
