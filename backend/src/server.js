@@ -36,7 +36,8 @@ app.use(express.json({ limit: "25mb" }));
 // ---------------------------------------------------------------------------
 // Uploads
 // ---------------------------------------------------------------------------
-const uploadsDir = path.resolve(process.cwd(), "uploads");
+const baseDir = process.env.SML_DATA_DIR || process.env.DATA_DIR || process.cwd();
+const uploadsDir = path.resolve(baseDir, "uploads");
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 const upload = multer({ dest: uploadsDir });
 
@@ -139,6 +140,66 @@ app.delete("/api/projects/:id", requireAuth, (req, res) => {
 
   if (!removed) return res.status(404).json({ error: "Project not found" });
   res.json({ ok: true });
+});
+
+// ---------------------------------------------------------------------------
+// Files (project alias routes)
+// Frontend expects:
+//   GET  /api/projects/:projectId/files
+//   POST /api/projects/:projectId/files  (multipart form-data field "file")
+// These are aliases to the canonical routes under /api/files/project/:projectId.
+// ---------------------------------------------------------------------------
+app.get("/api/projects/:projectId/files", requireAuth, (req, res) => {
+  const userId = req.user.id;
+  const projectId = asNum(req.params.projectId);
+  const files = withUserStore(userId, (store) => {
+    ensureFilesArray(store);
+    const out = store.files
+      .filter((f) => asNum(f.project_id ?? f.projectId) === projectId)
+      .map((f) => {
+        const sn = normalizeFileToSnake(f);
+        if (!sn.size_bytes) {
+          const stored = pickStoredName(f);
+          const abs = stored ? path.join(uploadsDir, stored) : null;
+          if (abs && fs.existsSync(abs)) {
+            try { sn.size_bytes = fs.statSync(abs).size; } catch {}
+          }
+        }
+        return sn;
+      })
+      .sort((a, b) => asNum(b.id) - asNum(a.id));
+    return out;
+  });
+  res.json(files);
+});
+
+app.post("/api/projects/:projectId/files", requireAuth, upload.single("file"), (req, res) => {
+  const userId = req.user.id;
+  const projectId = asNum(req.params.projectId);
+  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
+
+  const originalName = req.file.originalname || "upload.bin";
+  const storedName = `${Date.now()}_${crypto.randomBytes(6).toString("hex")}${path.extname(originalName) || ""}`;
+  const destPath = path.join(uploadsDir, storedName);
+
+  fs.renameSync(req.file.path, destPath);
+
+  const fileRec = {
+    id: Date.now(),
+    project_id: projectId,
+    original_name: originalName,
+    stored_name: storedName,
+    mime_type: req.file.mimetype || "application/octet-stream",
+    size_bytes: req.file.size || 0,
+    created_at: nowIso(),
+  };
+
+  withUserStore(userId, (store) => {
+    ensureFilesArray(store);
+    store.files.unshift(fileRec);
+  });
+
+  res.json({ ok: true, file: fileRec });
 });
 
 // ---------------------------------------------------------------------------

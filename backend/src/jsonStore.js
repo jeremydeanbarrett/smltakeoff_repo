@@ -5,7 +5,8 @@ import crypto from "crypto";
 // Simple per-user JSON store. No SQLite, no native builds.
 // Stores live in: backend/data/<userId>.json
 
-const dataDir = path.resolve(process.cwd(), "data");
+const baseDir = process.env.SML_DATA_DIR || process.env.DATA_DIR || process.cwd();
+const dataDir = path.resolve(baseDir, "data");
 
 function ensureDataDir() {
   if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });

@@ -57,6 +57,12 @@ async function request(path, opts = {}) {
 }
 
 // ---- Files ----
+// Backend canonical routes:
+//   GET/POST  /api/files/project/:projectId
+//   GET       /api/files/:fileId/stream
+//   GET       /api/files/:fileId/download
+//   DELETE    /api/files/:fileId
+
 export function fileStreamUrl(fileId) {
   return toApiUrl(`/api/files/${fileId}/stream`);
 }
@@ -66,7 +72,7 @@ export function fileDownloadUrl(fileId) {
 }
 
 export async function uploadFile(projectId, file) {
-  const url = toApiUrl(`/api/projects/${projectId}/files`);
+  const url = toApiUrl(`/api/files/project/${projectId}`);
   const form = new FormData();
   form.append("file", file);
 
@@ -110,7 +116,7 @@ export const api = {
   // Projects
   listProjects: async () => {
     const data = await request(`/api/projects`);
-    // Backend returns array; UI expects { projects: [...] }
+    // backend returns array; UI expects { projects: [...] }
     return Array.isArray(data) ? { projects: data } : data;
   },
 
@@ -120,7 +126,6 @@ export const api = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, description }),
     });
-    // Some backends return created object; some wrap it. Either is fine for current UI.
     return data;
   },
 
@@ -130,22 +135,19 @@ export const api = {
     return data && !data.project ? { project: data } : data;
   },
 
-  deleteProject: (projectId) =>
-    request(`/api/projects/${projectId}`, { method: "DELETE" }),
+  deleteProject: (projectId) => request(`/api/projects/${projectId}`, { method: "DELETE" }),
 
   // Files
   listFiles: async (projectId) => {
-    const data = await request(`/api/projects/${projectId}/files`);
-    // UI expects { files: [...] }
+    const data = await request(`/api/files/project/${projectId}`);
+    // backend returns array; UI expects { files: [...] }
     return Array.isArray(data) ? { files: data } : data;
   },
 
   // ---- Libraries (STOP THE CRASH NOW) ----
-  // Your frontend is calling api.listItemFolders(), but backend wiring may not be done yet.
-  // For now we return an empty list so the app doesn't throw and break other pages.
-  listItemFolders: async () => {
-    return { folders: [] };
-  },
+  // Frontend calls api.listItemFolders(), but backend wiring may not be done yet.
+  // Return empty so Libraries doesn't crash Projects.
+  listItemFolders: async () => ({ folders: [] }),
 };
 
 export { request };
