@@ -31,6 +31,7 @@ function authHeaders(extra = {}) {
   };
 }
 
+// Build a full URL using API_BASE, unless already absolute.
 export function toApiUrl(path) {
   if (!path) return API_BASE;
   if (typeof path !== "string") path = String(path);
@@ -38,7 +39,7 @@ export function toApiUrl(path) {
   return `${API_BASE}${path.startsWith("/") ? "" : "/"}${path}`;
 }
 
-async function request(path, opts = {}) {
+export async function request(path, opts = {}) {
   const url = toApiUrl(path);
 
   const res = await fetch(url, {
@@ -56,13 +57,7 @@ async function request(path, opts = {}) {
   return res;
 }
 
-// ---- Files ----
-// Backend canonical routes:
-//   GET/POST  /api/files/project/:projectId
-//   GET       /api/files/:fileId/stream
-//   GET       /api/files/:fileId/download
-//   DELETE    /api/files/:fileId
-
+// ---- Files (backend canonical: /api/files/project/:projectId, but backend also supports legacy /api/projects/:id/files) ----
 export function fileStreamUrl(fileId) {
   return toApiUrl(`/api/files/${fileId}/stream`);
 }
@@ -72,7 +67,8 @@ export function fileDownloadUrl(fileId) {
 }
 
 export async function uploadFile(projectId, file) {
-  const url = toApiUrl(`/api/files/project/${projectId}`);
+  // Use the legacy alias expected by App.jsx; backend maps it to /api/files/project/:projectId
+  const url = toApiUrl(`/api/projects/${projectId}/files`);
   const form = new FormData();
   form.append("file", file);
 
@@ -96,7 +92,7 @@ export async function deleteFile(fileId) {
   return request(`/api/files/${fileId}`, { method: "DELETE" });
 }
 
-// ---- API Object (App.jsx expects these) ----
+// ---- API Object (App.jsx + pages expect these) ----
 export const api = {
   // Auth
   login: (email, password) =>
@@ -114,40 +110,62 @@ export const api = {
     }),
 
   // Projects
-  listProjects: async () => {
-    const data = await request(`/api/projects`);
-    // backend returns array; UI expects { projects: [...] }
-    return Array.isArray(data) ? { projects: data } : data;
-  },
+  listProjects: () => request(`/api/projects`),
 
-  createProject: async (name, description) => {
-    const data = await request(`/api/projects`, {
+  createProject: (name, description) =>
+    request(`/api/projects`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, description }),
-    });
-    return data;
-  },
+    }),
 
-  getProject: async (projectId) => {
-    const data = await request(`/api/projects/${projectId}`);
-    // UI expects { project: {...} }
-    return data && !data.project ? { project: data } : data;
-  },
+  getProject: (projectId) => request(`/api/projects/${projectId}`),
 
   deleteProject: (projectId) => request(`/api/projects/${projectId}`, { method: "DELETE" }),
 
-  // Files
-  listFiles: async (projectId) => {
-    const data = await request(`/api/files/project/${projectId}`);
-    // backend returns array; UI expects { files: [...] }
-    return Array.isArray(data) ? { files: data } : data;
-  },
+  // Files (legacy alias expected by the UI)
+  listFiles: (projectId) => request(`/api/projects/${projectId}/files`),
 
-  // ---- Libraries (STOP THE CRASH NOW) ----
-  // Frontend calls api.listItemFolders(), but backend wiring may not be done yet.
-  // Return empty so Libraries doesn't crash Projects.
-  listItemFolders: async () => ({ folders: [] }),
+  // -------------------- Libraries --------------------
+  // Folders
+  listItemFolders: () => request(`/api/items/folders`),
+
+  createItemFolder: (name) =>
+    request(`/api/items/folders`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name }),
+    }),
+
+  deleteItemFolder: (folderId) => request(`/api/items/folders/${folderId}`, { method: "DELETE" }),
+
+  // Items
+  listItems: () => request(`/api/items`),
+
+  createItem: (payload) =>
+    request(`/api/items`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload ?? {}),
+    }),
+
+  updateItem: (itemId, payload) =>
+    request(`/api/items/${itemId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload ?? {}),
+    }),
+
+  deleteItem: (itemId) => request(`/api/items/${itemId}`, { method: "DELETE" }),
+
+  // -------------------- Takeoffs --------------------
+  getTakeoff: (projectId, fileId) => request(`/api/takeoffs/project/${projectId}/file/${fileId}`),
+
+  saveTakeoff: (projectId, fileId, data) =>
+    request(`/api/takeoffs/project/${projectId}/file/${fileId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data ?? {}),
+    }),
 };
 
-export { request };
