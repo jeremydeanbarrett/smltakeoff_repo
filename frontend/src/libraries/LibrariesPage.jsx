@@ -27,8 +27,10 @@ export default function LibrariesPage() {
   async function reload() {
     const f = await api.listItemFolders();
     const it = await api.listItems();
-    setFolders(Array.isArray(f?.folders) ? f.folders : []);
-    setItems(Array.isArray(it?.items) ? it.items : []);
+    const folders = Array.isArray(f) ? f : (Array.isArray(f?.folders) ? f.folders : []);
+    const items = Array.isArray(it) ? it : (Array.isArray(it?.items) ? it.items : []);
+    setFolders(folders);
+    setItems(items);
   }
 
   useEffect(() => {

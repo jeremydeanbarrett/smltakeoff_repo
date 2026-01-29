@@ -123,8 +123,9 @@ function Projects() {
   const [err, setErr] = useState("");
 
   async function refresh() {
-    const { projects } = await api.listProjects();
-    setProjects(projects || []);
+    const data = await api.listProjects();
+    const projects = Array.isArray(data) ? data : (data?.projects || []);
+    setProjects(projects);
   }
 
   useEffect(() => { refresh(); }, []);
@@ -195,10 +196,14 @@ function ProjectView() {
   const [err, setErr] = useState("");
 
   async function refresh() {
-    const { project } = await api.getProject(projectId);
-    const { files } = await api.listFiles(projectId);
+    const projectData = await api.getProject(projectId);
+    const fileData = await api.listFiles(projectId);
+
+    const project = projectData?.project ?? projectData;
+    const files = Array.isArray(fileData) ? fileData : (fileData?.files || []);
+
     setProject(project);
-    setFiles(files || []);
+    setFiles(files);
     if (files?.length && !selected) setSelected(files[0]);
   }
 
