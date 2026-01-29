@@ -108,21 +108,37 @@ export const api = {
     }),
 
   // Projects
-  listProjects: () => request(`/api/projects`),
+  listProjects: async () => {
+    const data = await request(`/api/projects`);
+    // Backend returns array; UI expects { projects: [...] }
+    return Array.isArray(data) ? { projects: data } : data;
+  },
 
-  createProject: (name, description) =>
-    request(`/api/projects`, {
+  createProject: async (name, description) => {
+    const data = await request(`/api/projects`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, description }),
-    }),
+    });
+    // Some backends return created object; some wrap it. Either is fine for current UI.
+    return data;
+  },
 
-  getProject: (projectId) => request(`/api/projects/${projectId}`),
+  getProject: async (projectId) => {
+    const data = await request(`/api/projects/${projectId}`);
+    // UI expects { project: {...} }
+    return data && !data.project ? { project: data } : data;
+  },
 
-  deleteProject: (projectId) => request(`/api/projects/${projectId}`, { method: "DELETE" }),
+  deleteProject: (projectId) =>
+    request(`/api/projects/${projectId}`, { method: "DELETE" }),
 
   // Files
-  listFiles: (projectId) => request(`/api/projects/${projectId}/files`),
+  listFiles: async (projectId) => {
+    const data = await request(`/api/projects/${projectId}/files`);
+    // UI expects { files: [...] }
+    return Array.isArray(data) ? { files: data } : data;
+  },
 
   // ---- Libraries (STOP THE CRASH NOW) ----
   // Your frontend is calling api.listItemFolders(), but backend wiring may not be done yet.
