@@ -1,11 +1,9 @@
-// Central API client for smltakeoff_repo
+// frontend/src/api.js
 // JB requirement: NO localhost hardcoding. Always use Render backend.
 
 const RAW_BASE =
-  (import.meta?.env?.VITE_API_BASE &&
-    String(import.meta.env.VITE_API_BASE).trim()) ||
-  (import.meta?.env?.VITE_API_BASE_URL &&
-    String(import.meta.env.VITE_API_BASE_URL).trim()) ||
+  (import.meta?.env?.VITE_API_BASE && String(import.meta.env.VITE_API_BASE).trim()) ||
+  (import.meta?.env?.VITE_API_BASE_URL && String(import.meta.env.VITE_API_BASE_URL).trim()) ||
   "https://smltakeoff-backend.onrender.com";
 
 export const API_BASE = RAW_BASE.replace(/\/$/, "");
@@ -33,7 +31,6 @@ function authHeaders(extra = {}) {
   };
 }
 
-// Build a full URL using API_BASE, unless already absolute.
 export function toApiUrl(path) {
   if (!path) return API_BASE;
   if (typeof path !== "string") path = String(path);
@@ -41,53 +38,7 @@ export function toApiUrl(path) {
   return `${API_BASE}${path.startsWith("/") ? "" : "/"}${path}`;
 }
 
-// Some parts of your app import these.
-export function fileStreamUrl(path) {
-  return toApiUrl(path);
-}
-
-export function fileDownloadUrl(path) {
-  return toApiUrl(path);
-}
-
-export async function uploadFile(path, file, extraFields = {}, opts = {}) {
-  const url = toApiUrl(path);
-
-  const form = new FormData();
-  // Keep it flexible: accept File/Blob, or {file: File} etc.
-  if (file instanceof File || file instanceof Blob) {
-    form.append("file", file);
-  } else if (file && file.file instanceof File) {
-    form.append("file", file.file);
-  } else {
-    // Fallback: try to append something usable
-    form.append("file", file);
-  }
-
-  // Append extra fields (e.g., projectId, page, meta)
-  if (extraFields && typeof extraFields === "object") {
-    for (const [k, v] of Object.entries(extraFields)) {
-      if (v !== undefined && v !== null) form.append(k, String(v));
-    }
-  }
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: authHeaders(opts.headers || {}),
-    body: form,
-  });
-
-  if (!res.ok) {
-    const txt = await res.text().catch(() => "");
-    throw new Error(`API ${res.status} ${res.statusText}: ${txt}`.trim());
-  }
-
-  const ct = res.headers.get("content-type") || "";
-  if (ct.includes("application/json")) return res.json();
-  return res;
-}
-
-export async function request(path, opts = {}) {
+async function request(path, opts = {}) {
   const url = toApiUrl(path);
 
   const res = await fetch(url, {
@@ -105,19 +56,16 @@ export async function request(path, opts = {}) {
   return res;
 }
 
-export const api = {
-  get: (path) => request(path),
-  post: (path, body) =>
-    request(path, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body ?? {}),
-    }),
-  put: (path, body) =>
-    request(path, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body ?? {}),
-    }),
-  del: (path) => request(path, { method: "DELETE" }),
-};
+/**
+ * File helpers (used by App.jsx + Takeoff/Preview)
+ * These MUST return absolute URLs the browser can load.
+ *
+ * Assumed backend routes:
+ *  - GET  /api/files/:id/stream
+ *  - GET  /api/files/:id/download
+ *  - POST /api/projects/:projectId/files
+ *  - DELETE /api/files/:id
+ *
+ * If your backend uses slightly different routes, we’ll adjust once we see the next error.
+ */
+export functi
