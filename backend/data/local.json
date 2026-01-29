@@ -1,0 +1,89 @@
+{
+  "projects": [
+    {
+      "id": "1768850662976",
+      "name": "My First Project",
+      "createdAt": "2026-01-19T19:24:22.977Z",
+      "updatedAt": "2026-01-19T19:24:22.977Z"
+    }
+  ],
+  "files": [
+    {
+      "id": 1768850679352,
+      "project_id": 1768850662976,
+      "original_name": "Mechanical Drawings - 18-05-2023 (5) (1).pdf",
+      "stored_name": "1768850679351_896e0aec2a8c.pdf",
+      "mime_type": "application/pdf",
+      "size_bytes": 11207032,
+      "created_at": "2026-01-19T19:24:39.352Z"
+    }
+  ],
+  "items": [
+    {
+      "id": 1768850697813,
+      "system_type": "Plumbing",
+      "category": "Pipe",
+      "item_name": "jhjhjhj",
+      "size": "",
+      "folder_id": null,
+      "created_at": "2026-01-19T19:24:57.813Z",
+      "updated_at": "2026-01-19T19:24:57.813Z"
+    }
+  ],
+  "itemFolders": [],
+  "takeoffs": [
+    {
+      "projectId": 1768850662976,
+      "fileId": 1768850679352,
+      "scaleMmPerPx": 1,
+      "data": {
+        "pages": {
+          "2": {
+            "strokes": [
+              {
+                "id": "1768850702245-91bf40affe30b8",
+                "type": "line",
+                "points": [
+                  1137.2846715328467,
+                  491.9124087591241,
+                  1244.4963503649635,
+                  1070.0145985401462
+                ],
+                "itemId": "1768850697813"
+              },
+              {
+                "id": "1768850703070-f8a1965baefa18",
+                "type": "line",
+                "points": [
+                  1032.1751824817518,
+                  1055.2992700729928,
+                  943.8832116788321,
+                  584.4087591240876
+                ],
+                "itemId": "1768850697813"
+              },
+              {
+                "id": "1768850709618-277817fd9938d8",
+                "type": "line",
+                "points": [
+                  870.3065693430657,
+                  559.1824817518249,
+                  849.2846715328468,
+                  935.4744525547446
+                ],
+                "itemId": "1768850697813"
+              }
+            ]
+          }
+        },
+        "scale": {
+          "unitSystem": "imperial",
+          "preset": "1_8",
+          "unitsPerPx": 0.1111111111111111
+        }
+      },
+      "updatedAt": "2026-01-19T19:25:09.627Z",
+      "createdAt": "2026-01-19T19:25:02.249Z"
+    }
+  ]
+}
