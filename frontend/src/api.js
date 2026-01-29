@@ -56,18 +56,7 @@ async function request(path, opts = {}) {
   return res;
 }
 
-/**
- * File helpers (used by App.jsx + Takeoff/Preview)
- * These MUST return absolute URLs the browser can load.
- *
- * Assumed backend routes:
- *  - GET  /api/files/:id/stream
- *  - GET  /api/files/:id/download
- *  - POST /api/projects/:projectId/files
- *  - DELETE /api/files/:id
- *
- * If your backend uses slightly different routes, we’ll adjust once we see the next error.
- */
+// ---- Files ----
 export function fileStreamUrl(fileId) {
   return toApiUrl(`/api/files/${fileId}/stream`);
 }
@@ -78,7 +67,6 @@ export function fileDownloadUrl(fileId) {
 
 export async function uploadFile(projectId, file) {
   const url = toApiUrl(`/api/projects/${projectId}/files`);
-
   const form = new FormData();
   form.append("file", file);
 
@@ -102,11 +90,7 @@ export async function deleteFile(fileId) {
   return request(`/api/files/${fileId}`, { method: "DELETE" });
 }
 
-/**
- * API methods used by App.jsx (and likely other pages)
- * These route names are the obvious, standard ones.
- * If your backend uses different ones, the next Render log will tell us and we’ll adjust fast.
- */
+// ---- API Object (App.jsx expects these) ----
 export const api = {
   // Auth
   login: (email, password) =>
@@ -135,9 +119,17 @@ export const api = {
 
   getProject: (projectId) => request(`/api/projects/${projectId}`),
 
-  deleteProject: (projectId) =>
-    request(`/api/projects/${projectId}`, { method: "DELETE" }),
+  deleteProject: (projectId) => request(`/api/projects/${projectId}`, { method: "DELETE" }),
 
   // Files
   listFiles: (projectId) => request(`/api/projects/${projectId}/files`),
+
+  // ---- Libraries (STOP THE CRASH NOW) ----
+  // Your frontend is calling api.listItemFolders(), but backend wiring may not be done yet.
+  // For now we return an empty list so the app doesn't throw and break other pages.
+  listItemFolders: async () => {
+    return { folders: [] };
+  },
 };
+
+export { request };
