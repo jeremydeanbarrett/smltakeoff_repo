@@ -41,13 +41,53 @@ export function toApiUrl(path) {
   return `${API_BASE}${path.startsWith("/") ? "" : "/"}${path}`;
 }
 
-// Some parts of your app import this specifically.
+// Some parts of your app import these.
 export function fileStreamUrl(path) {
-  // Accepts "/api/..." or "api/..." or any backend path. Returns full URL.
   return toApiUrl(path);
 }
 
-async function request(path, opts = {}) {
+export function fileDownloadUrl(path) {
+  return toApiUrl(path);
+}
+
+export async function uploadFile(path, file, extraFields = {}, opts = {}) {
+  const url = toApiUrl(path);
+
+  const form = new FormData();
+  // Keep it flexible: accept File/Blob, or {file: File} etc.
+  if (file instanceof File || file instanceof Blob) {
+    form.append("file", file);
+  } else if (file && file.file instanceof File) {
+    form.append("file", file.file);
+  } else {
+    // Fallback: try to append something usable
+    form.append("file", file);
+  }
+
+  // Append extra fields (e.g., projectId, page, meta)
+  if (extraFields && typeof extraFields === "object") {
+    for (const [k, v] of Object.entries(extraFields)) {
+      if (v !== undefined && v !== null) form.append(k, String(v));
+    }
+  }
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: authHeaders(opts.headers || {}),
+    body: form,
+  });
+
+  if (!res.ok) {
+    const txt = await res.text().catch(() => "");
+    throw new Error(`API ${res.status} ${res.statusText}: ${txt}`.trim());
+  }
+
+  const ct = res.headers.get("content-type") || "";
+  if (ct.includes("application/json")) return res.json();
+  return res;
+}
+
+export async function request(path, opts = {}) {
   const url = toApiUrl(path);
 
   const res = await fetch(url, {
@@ -81,5 +121,3 @@ export const api = {
     }),
   del: (path) => request(path, { method: "DELETE" }),
 };
-
-export { request };
