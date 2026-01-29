@@ -1,0 +1,35 @@
+﻿# dependencies
+node_modules
+
+# builds
+dist
+build
+
+# vite / tooling
+.vite
+.parcel-cache
+.cache
+
+# env/secrets
+.env
+.env.*
+backend/.env
+frontend/.env
+
+# uploads / db (keep local, don’t commit)
+backend/uploads
+backend/data
+*.sqlite
+*.sqlite3
+
+# logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
