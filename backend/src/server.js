@@ -788,28 +788,6 @@ app.put("/api/takeoffs/project/:projectId/file/:fileId", requireAuth, (req, res)
   res.json({ ok: true, takeoff: out });
 });
 
-/**
- * Serve built frontend (Render deploy)
- * Build step copies frontend/dist -> backend/public
- */
-const PUBLIC_DIR = path.join(process.cwd(), "public");
-if (fs.existsSync(PUBLIC_DIR)) {
-  app.use(express.static(PUBLIC_DIR, {
-    etag: false,
-    maxAge: 0,
-    setHeaders: (res) => {
-      res.setHeader("Cache-Control", "no-store");
-    },
-  }));
-
-  // SPA fallback (do not catch /api/*)
-  app.get(/^\/(?!api\/).*/, (req, res) => {
-    const indexHtml = path.join(PUBLIC_DIR, "index.html");
-    if (fs.existsSync(indexHtml)) return res.sendFile(indexHtml);
-    return res.status(404).send("index.html not found");
-  });
-}
-
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`SML Takeoff backend (J35) running on port ${PORT}`);

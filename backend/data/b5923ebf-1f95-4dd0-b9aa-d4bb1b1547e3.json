@@ -1,0 +1,376 @@
+{
+  "projects": [
+    {
+      "id": "1771061108763",
+      "name": "My First Project",
+      "createdAt": "2026-02-14T09:25:08.763Z",
+      "updatedAt": "2026-02-14T09:25:08.763Z"
+    }
+  ],
+  "files": [
+    {
+      "id": 1771061123226,
+      "project_id": 1771061108763,
+      "original_name": "Mechanical Drawings - 18-05-2023.pdf",
+      "stored_name": "1771061123225_66ab1a4ee850.pdf",
+      "mime_type": "application/pdf",
+      "size_bytes": 11207032,
+      "created_at": "2026-02-14T09:25:23.226Z"
+    }
+  ],
+  "items": [
+    {
+      "id": 1,
+      "system_type": "Plumbing",
+      "category": "Copper",
+      "item_name": "Copper",
+      "size": "1/2\"",
+      "unit": "ft",
+      "folder_id": 8,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 2,
+      "system_type": "Plumbing",
+      "category": "Copper",
+      "item_name": "Copper",
+      "size": "3/4\"",
+      "unit": "ft",
+      "folder_id": 8,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 3,
+      "system_type": "Plumbing",
+      "category": "Copper",
+      "item_name": "Copper",
+      "size": "1\"",
+      "unit": "ft",
+      "folder_id": 8,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 4,
+      "system_type": "Plumbing",
+      "category": "Copper",
+      "item_name": "Copper",
+      "size": "1-1/4\"",
+      "unit": "ft",
+      "folder_id": 8,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 5,
+      "system_type": "Plumbing",
+      "category": "Copper",
+      "item_name": "Copper",
+      "size": "1-1/2\"",
+      "unit": "ft",
+      "folder_id": 8,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 6,
+      "system_type": "Plumbing",
+      "category": "Copper",
+      "item_name": "Copper",
+      "size": "2\"",
+      "unit": "ft",
+      "folder_id": 8,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 7,
+      "system_type": "Plumbing",
+      "category": "Copper",
+      "item_name": "Copper",
+      "size": "3\"",
+      "unit": "ft",
+      "folder_id": 8,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 8,
+      "system_type": "Plumbing",
+      "category": "Copper",
+      "item_name": "Copper",
+      "size": "4\"",
+      "unit": "ft",
+      "folder_id": 8,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 9,
+      "system_type": "Plumbing",
+      "category": "DWV",
+      "item_name": "DWV",
+      "size": "1-1/2\"",
+      "unit": "ft",
+      "folder_id": 8,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 10,
+      "system_type": "Plumbing",
+      "category": "DWV",
+      "item_name": "DWV",
+      "size": "2\"",
+      "unit": "ft",
+      "folder_id": 8,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 11,
+      "system_type": "Plumbing",
+      "category": "DWV",
+      "item_name": "DWV",
+      "size": "3\"",
+      "unit": "ft",
+      "folder_id": 8,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 12,
+      "system_type": "Plumbing",
+      "category": "DWV",
+      "item_name": "DWV",
+      "size": "4\"",
+      "unit": "ft",
+      "folder_id": 8,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 13,
+      "system_type": "Plumbing",
+      "category": "DWV",
+      "item_name": "DWV",
+      "size": "6\"",
+      "unit": "ft",
+      "folder_id": 8,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 14,
+      "system_type": "HVAC",
+      "category": "Spiral",
+      "item_name": "Spiral",
+      "size": "4\"",
+      "unit": "ft",
+      "folder_id": 6,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 15,
+      "system_type": "HVAC",
+      "category": "Spiral",
+      "item_name": "Spiral",
+      "size": "6\"",
+      "unit": "ft",
+      "folder_id": 6,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 16,
+      "system_type": "HVAC",
+      "category": "Spiral",
+      "item_name": "Spiral",
+      "size": "8\"",
+      "unit": "ft",
+      "folder_id": 6,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 17,
+      "system_type": "HVAC",
+      "category": "Spiral",
+      "item_name": "Spiral",
+      "size": "10\"",
+      "unit": "ft",
+      "folder_id": 6,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 18,
+      "system_type": "HVAC",
+      "category": "Spiral",
+      "item_name": "Spiral",
+      "size": "12\"",
+      "unit": "ft",
+      "folder_id": 6,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 19,
+      "system_type": "HVAC",
+      "category": "Spiral",
+      "item_name": "Spiral",
+      "size": "14\"",
+      "unit": "ft",
+      "folder_id": 6,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 20,
+      "system_type": "HVAC",
+      "category": "Spiral",
+      "item_name": "Spiral",
+      "size": "16\"",
+      "unit": "ft",
+      "folder_id": 6,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 21,
+      "system_type": "HVAC",
+      "category": "Spiral",
+      "item_name": "Spiral",
+      "size": "18\"",
+      "unit": "ft",
+      "folder_id": 6,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 22,
+      "system_type": "HVAC",
+      "category": "Spiral",
+      "item_name": "Spiral",
+      "size": "20\"",
+      "unit": "ft",
+      "folder_id": 6,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 23,
+      "system_type": "Plumbing",
+      "category": "Fixtures",
+      "item_name": "Toilet",
+      "size": "",
+      "unit": "ea",
+      "folder_id": 4,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 24,
+      "system_type": "Plumbing",
+      "category": "Fixtures",
+      "item_name": "Sink",
+      "size": "",
+      "unit": "ea",
+      "folder_id": 4,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 25,
+      "system_type": "Plumbing",
+      "category": "Fixtures",
+      "item_name": "Lab Sink",
+      "size": "",
+      "unit": "ea",
+      "folder_id": 4,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 26,
+      "system_type": "Plumbing",
+      "category": "Fixtures",
+      "item_name": "Urinal",
+      "size": "",
+      "unit": "ea",
+      "folder_id": 4,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 27,
+      "system_type": "Plumbing",
+      "category": "Fixtures",
+      "item_name": "Water Fountain",
+      "size": "",
+      "unit": "ea",
+      "folder_id": 4,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 28,
+      "system_type": "Plumbing",
+      "category": "Fixtures",
+      "item_name": "Kitchen Sink",
+      "size": "",
+      "unit": "ea",
+      "folder_id": 4,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 29,
+      "system_type": "Plumbing",
+      "category": "Fixtures",
+      "item_name": "Janitor Sink",
+      "size": "",
+      "unit": "ea",
+      "folder_id": 4,
+      "cost_per_unit": 0
+    },
+    {
+      "id": 30,
+      "system_type": "Plumbing",
+      "category": "Fixtures",
+      "item_name": "Mop Sink",
+      "size": "",
+      "unit": "ea",
+      "folder_id": 4,
+      "cost_per_unit": 0
+    }
+  ],
+  "itemFolders": [
+    {
+      "id": 1,
+      "name": "Assembly Items",
+      "parentId": null
+    },
+    {
+      "id": 2,
+      "name": "Electrical",
+      "parentId": null
+    },
+    {
+      "id": 3,
+      "name": "Equipment",
+      "parentId": null
+    },
+    {
+      "id": 4,
+      "name": "Fixtures",
+      "parentId": null
+    },
+    {
+      "id": 5,
+      "name": "Hangers / Supports",
+      "parentId": null
+    },
+    {
+      "id": 6,
+      "name": "HVAC",
+      "parentId": null
+    },
+    {
+      "id": 7,
+      "name": "Plumbing Fittings",
+      "parentId": null
+    },
+    {
+      "id": 8,
+      "name": "Plumbing Pipe",
+      "parentId": null
+    },
+    {
+      "id": 9,
+      "name": "Valves",
+      "parentId": null
+    },
+    {
+      "id": 10,
+      "name": "Watts slab",
+      "parentId": null
+    }
+  ],
+  "takeoffs": []
+}
