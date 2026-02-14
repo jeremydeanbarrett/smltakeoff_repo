@@ -1,0 +1,13 @@
+# =========================
+# smltakeoff_repo — IGNORE JUNK
+# =========================
+
+**/node_modules/
+backend/uploads/
+backend/data/local.json
+.env
+.env.*
+dist/
+build/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: smltakeoff-web
+    env: node
+    plan: free
+    rootDir: .
+    buildCommand: |
+      cd backend && npm install
+      cd ../frontend && npm install && npm run build
+      rm -rf ../backend/public
+      mkdir -p ../backend/public
+      cp -r dist/* ../backend/public/
+    startCommand: cd backend && npm start
+    autoDeploy: true
